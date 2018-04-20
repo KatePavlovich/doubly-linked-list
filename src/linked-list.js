@@ -8,7 +8,7 @@ class LinkedList {
 	}
 
     append(data) {
-		var node = new Node(data);
+		let node = new Node(data);
 	 
 		if (this.length) {
 			this._tail.next = node;
@@ -20,13 +20,12 @@ class LinkedList {
 		}
 	 
 		this.length++;
-	 
-		return node;
+		return this;
 	}
 
 	
     head() {
-		return this._head.data
+		return this._head.data;
 	}
 	
 
@@ -36,29 +35,41 @@ class LinkedList {
 
 	
     at(index) {
-		var Node = this._head,
+		let currentNode = this._head,
         length = this.length,
-        count = 0,
-        message = {failure: 'Failure: non-existent node in this list-XAXAXA.'};
+        count = 0;
  
 		if (length === 0 || index < 0 || index > length) {
-			throw new Error(message.failure);
+			throw new Error;
 		}
 
 		while (count < index) {
-			Node = Node.next;
+			currentNode = currentNode.next;
 			count++;
 		}
 	 
-		return Node.data;
+		return currentNode.data;
 	}
 
 	
     insertAt(index, data) {
 		let node = new Node(data);
-		let count=0;
-		let currentNode=this._head;
 
+		
+		if (!this._head) {
+			this._head = node;
+			this._tail = node;
+			this.length++;
+			return this;
+		}
+		
+		if (index===0) {
+			node.next=this._head;
+			this._head.previous = node;
+			return this;
+		}
+		let count=0;
+		let currentNode = this._head;
 		while(count<index){
 			currentNode=currentNode.next;
 			count++;
@@ -69,7 +80,7 @@ class LinkedList {
 		node.next=currentNode;
 
 		this.length++;
-		return node;
+		return this;
 	}
 
 	
@@ -78,16 +89,33 @@ class LinkedList {
 	}
 
     clear() {
-		this.length=0;
-		this._head.data = null;
-		this._tail.data = null;
+		this._head = null;
+		this._tail = null;
+		this.length = 0;
+		return this;
 	}
 
 	
     deleteAt(index) {
 		let currentNode = this._head;
 		let count = 0;		
-	 
+		
+		if (currentNode===null || index===null) {return;}
+		
+		if(index===0 && this.length===1){ 
+			this._tail=null;  
+			this._head=null; 
+			this.length=0; 
+			return this; 
+		}
+		
+		if (index===0) {
+			this._head=this._head.next;
+			this._head.previous=null;
+			this.length--;
+			return this;
+		}
+		
 		while (count < index) {
 			currentNode = currentNode.next;
 			count++;
@@ -98,36 +126,32 @@ class LinkedList {
 		currentNode=null;
  
 		this.length--;
+		return this;
 	}
 	
 
     reverse() {
-		let temp=this._head;
-		
-		this._head=this._tail;
-		this._tail=temp;
-		this._head.next=this._head.previous;
 		let currentNode=this._head;
-		this._tail.next=null;
-		
-		while (currentNode!==null) {
-			//[currentNode.previous, currentNode.next]=[currentNode.next, currentNode.previous];
-			
+		let temp=null;
+		let temp2=this._head;
+				
+		//console.log(this._head, this._tail);
 
-			
-			temp = currentNode.next;
-            currentNode.next = currentNode.previous;
-            currentNode.previous = temp;
-			currentNode=currentNode.next;
-			
-			   //next  = current->next;  //temporarily store the next node
-			   //current->next = prev;    //now assign the prev!node to next of current node
-			   //prev = current;   //update the previous pointer
-			   //current = next;
-			
-			
-			
-		}		
+		if (this._head===null){return null;}
+	
+		while (currentNode!==null) {
+			temp = currentNode.previous;
+            currentNode.previous = currentNode.next;
+            currentNode.next = temp;
+            currentNode = currentNode.previous;
+		}
+		if (temp != null) {
+            this._head = temp.previous;
+        }
+		this._tail=temp2;
+		this._tail.next=null;
+		return this;
+		//console.log(this._head, this._tail);
 	}
 
 	
